@@ -7,6 +7,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="env.js"></script>
         <script src="jquery.numeric.min.js"></script>
+        <link rel="stylesheet" href="index.css">
         <title>Weather or Not</title>
         <script>
             function convertTime(time) {
@@ -28,7 +29,10 @@
 
                 $("#weather-form").submit(function (e) {
                     e.preventDefault();
-                    $("#forecast-info").empty();
+                    $("#location").empty();
+                    $("#alert").empty();
+                    $("#forecast-info-container").empty();
+
                     var zipcode = $("#zipcode").val();
 
                     if ([...zipcode].length < 5) {
@@ -36,18 +40,24 @@
                     } else {
                         $.get(`${env.WEATHER_URL}/forecast.json?key=${env.WEATHER_KEY}&q=${zipcode}`, function (data, textStatus, jqXHR) {
                             console.log(data);
-                            if (Object.keys(data.alert) > 0) alert("Alert")
-                            $("#forecast-info").append(`<h3>${data.location.name}, ${data.location.region}</h3>`);
-                            var forecastContainer = $("#forecast-info").add("div").addClass("forecast-info-container")
+                            if (Object.keys(data.alert).length > 0) {
+                                var headline = `<h4>${data.alert.headline}</h4>`;
+                                var instruction = `<p>${data.alert.instruction}</p>`;
+                                var areas = `<p><u>Issued for:</u> ${data.alert.areas}</p>`;
+                                var alert = `<div class="alert">${headline} <div>${areas} ${instruction}</div></div>`;
+                                $("#alert").append(alert);
+                            }
+                            $("#location").append(`<h3>${data.location.name}, ${data.location.region}</h3>`);
                             var forecast = data.forecast.forecastday[0].hour;
                             forecast.map(hour => {
                                 var time = convertTime(hour.time);
-                                var forecastDiv = forecastContainer.append("<div>").addClass("forecast-info-div");
-                                forecastDiv.append(`<h4>Time: ${time}</h4>`);
-                                var forecastDataList = forecastDiv.add("ul").addClass("forecast-info-list");
-                                forecastDataList.append(`<li><div style="float: left;"><img src="${hour.condition.icon}"/></div> ${hour.condition.text}</li>`);
-                                forecastDataList.append(`<li>Temp: ${Math.round(hour.temp_f)}, Feels Like: ${Math.round(hour.feelslike_f)}</li>`);
-                                forecastDataList.append(`<li>Wind MPH: ${Math.round(hour.wind_mph)}, Humidity: ${hour.humidity}</li>`);
+                                var forecastTime = `<h4>${time}</h4>`;
+                                var conditions = `<li><div style="float: left;"><img src="${hour.condition.icon}"/></div> ${hour.condition.text}</li>`;
+                                var temp = `<li>Temp: ${Math.round(hour.temp_f)}, Feels Like: ${Math.round(hour.feelslike_f)}</li>`;
+                                var wind = `<li>Wind MPH: ${Math.round(hour.wind_mph)}</li>`;
+                                var humidity = `<li>Humidity: ${hour.humidity}</li>`;
+                                var insert = `<div class="forecast-hours">${forecastTime} ${conditions} ${temp} ${wind} ${humidity}</div>`;
+                                return $("#forecast-info-container").append(insert);
                             })
                         }).fail(function () {
                             alert("Oops, something went wrong.");
@@ -61,6 +71,7 @@
 
     <body>
         <header>
+            <img src="weather-icon.png" id="weather-icon" />
             <h1>Weather or Not</h1>
             <nav>
                 <a href="index.html">Current Weather</a>
@@ -75,7 +86,9 @@
                 </label>
                 <button id="forecast" type="submit" value="forecast">Get Forecast</button>
             </form>
-            <div id="forecast-info"></div>
+            <div id="location"></div>
+            <div id="alert"></div>
+            <div id="forecast-info-container"></div>
         </section>
     </body>
 
