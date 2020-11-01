@@ -7,6 +7,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="env.js"></script>
         <script src="jquery.numeric.min.js"></script>
+        <link rel="stylesheet" href="index.css">
         <title>Weather or Not</title>
         <script>
             $(document).ready(function () {
@@ -35,29 +36,12 @@
                     }
                 })
             })
-
-
-            //API METHODS:
-            //Current Weather -> /current.json
-            //Forecast -> /forecast.json
-            //Search -> /search.json
-            //History -> /history.json
-            //Time Zone -> /timezone.json
-            //Sports -> /sports.json
-            //Astronomy -> /astronomy.json
-            //IP Lookup -> /ip.json
-
-            //PARAMETERS
-            //key
-            //q -> US zip e.g.: q=93301
-            //days -> required only for forecast: days parameter value ranges between 1 and 10.e.g: days=5
-            //if days is not provided, then only today's date is returned
-
         </script>
     </head>
 
     <body>
         <header>
+            <img src="weather-icon.png" id="weather-icon" />
             <h1>Weather or Not</h1>
             <nav>
                 <a href="index.html">Current Weather</a>
