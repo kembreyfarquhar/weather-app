@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="env.js"></script>
+        <script src="jquery.numeric.min.js"></script>
+        <title>Weather or Not</title>
+        <script>
+            function convertTime(time) {
+                let splitTime = time.split(" ");
+                splitTime = splitTime[1].split(":");
+                let hour = splitTime[0];
+                if (hour == "00") return "12:00 AM";
+                if (Number(hour) > 0 && Number(hour) < 12) return splitTime[0] + ":00" + " AM";
+                if (hour == "12") return "12:00 PM";
+                if (Number(hour) > 12) {
+                    hour = Number(hour) - 12;
+                    hour = hour.toString();
+                    return hour + " PM";
+                }
+            }
+
+            $(document).ready(function () {
+                $("#zipcode").numeric();
+
+                $("#weather-form").submit(function (e) {
+                    e.preventDefault();
+                    $("#forecast-info").empty();
+                    var zipcode = $("#zipcode").val();
+
+                    if ([...zipcode].length < 5) {
+                        alert("Please enter a valid 5 digit zipcode.");
+                    } else {
+                        $.get(`${env.WEATHER_URL}/forecast.json?key=${env.WEATHER_KEY}&q=${zipcode}`, function (data, textStatus, jqXHR) {
+                            console.log(data);
+                            if (Object.keys(data.alert) > 0) alert("Alert")
+                            $("#forecast-info").append(`<h3>${data.location.name}, ${data.location.region}</h3>`);
+                            var forecastContainer = $("#forecast-info").add("div").addClass("forecast-info-container")
+                            var forecast = data.forecast.forecastday[0].hour;
+                            forecast.map(hour => {
+                                var time = convertTime(hour.time);
+                                var forecastDiv = forecastContainer.append("<div>").addClass("forecast-info-div");
+                                forecastDiv.append(`<h4>Time: ${time}</h4>`);
+                                var forecastDataList = forecastDiv.add("ul").addClass("forecast-info-list");
+                                forecastDataList.append(`<li><div style="float: left;"><img src="${hour.condition.icon}"/></div> ${hour.condition.text}</li>`);
+                                forecastDataList.append(`<li>Temp: ${Math.round(hour.temp_f)}, Feels Like: ${Math.round(hour.feelslike_f)}</li>`);
+                                forecastDataList.append(`<li>Wind MPH: ${Math.round(hour.wind_mph)}, Humidity: ${hour.humidity}</li>`);
+                            })
+                        }).fail(function () {
+                            alert("Oops, something went wrong.");
+                            $("#zipcode").val("");
+                        })
+                    }
+                })
+            })
+        </script>
+    </head>
+
+    <body>
+        <header>
+            <h1>Weather or Not</h1>
+            <nav>
+                <a href="index.html">Current Weather</a>
+                <a href="forecast.html">Forecast</a>
+                <a href="#">Astronomy</a>
+            </nav>
+        </header>
+        <section id="weather-section">
+            <form id="weather-form">
+                <label name="zipcode">Enter Zipcode:
+                    <input id="zipcode" name="zipcode" type="text" maxlength="5" />
+                </label>
+                <button id="forecast" type="submit" value="forecast">Get Forecast</button>
+            </form>
+            <div id="forecast-info"></div>
+        </section>
+    </body>
+
+</html>

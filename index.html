@@ -27,7 +27,7 @@
                             var weatherDataList = $("#weather-info").add("ul").addClass("weather-info-list");
                             weatherDataList.append(`<li><div style="float: left;"><img src="${data.current.condition.icon}"/></div> ${data.current.condition.text}</li>`);
                             weatherDataList.append(`<li>Temp: ${Math.round(data.current.temp_f)}, Feels Like: ${Math.round(data.current.feelslike_f)}</li>`);
-                            weatherDataList.append(`<li>Wind MPH: ${Math.round(data.current.gust_mph)}, Humidity: ${data.current.humidity}</li>`);
+                            weatherDataList.append(`<li>Wind MPH: ${Math.round(data.current.wind_mph)}, Humidity: ${data.current.humidity}</li>`);
                         }).fail(function () {
                             alert("Oops, something went wrong.");
                             $("#zipcode").val("");
@@ -60,8 +60,8 @@
         <header>
             <h1>Weather or Not</h1>
             <nav>
-                <a href="index.js">Current Weather</a>
-                <a href="#">Forecast</a>
+                <a href="index.html">Current Weather</a>
+                <a href="forecast.html">Forecast</a>
                 <a href="#">Astronomy</a>
             </nav>
         </header>
