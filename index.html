@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="env.js"></script>
+        <script src="jquery.numeric.min.js"></script>
+        <title>Weather or Not</title>
+        <script>
+            $(document).ready(function () {
+
+                $("#zipcode").numeric();
+
+                $("#weather-form").submit(function (e) {
+                    e.preventDefault();
+                    $("#weather-info").empty();
+                    var zipcode = $("#zipcode").val();
+                    console.log(zipcode)
+                    $.get(`${env.WEATHER_URL}/current.json?key=${env.WEATHER_KEY}&q=${zipcode}`, function (data, textStatus, jqXHR) {
+                        console.log(data);
+                        $("#weather-info").append(`<h3>${data.location.name}, ${data.location.region}</h3>`);
+                        var weatherDataList = $("#weather-info").add("ul").addClass("weather-info-list");
+                        weatherDataList.append(`<li><div style="float: left;"><img src="${data.current.condition.icon}"/></div> ${data.current.condition.text}</li>`);
+                        weatherDataList.append(`<li>Temp: ${Math.round(data.current.temp_f)}, Feels Like: ${Math.round(data.current.feelslike_f)}</li>`);
+                        weatherDataList.append(`<li>Wind MPH: ${Math.round(data.current.gust_mph)}, Humidity: ${data.current.humidity}</li>`);
+                    })
+                })
+            })
+
+
+            //API METHODS:
+            //Current Weather -> /current.json
+            //Forecast -> /forecast.json
+            //Search -> /search.json
+            //History -> /history.json
+            //Time Zone -> /timezone.json
+            //Sports -> /sports.json
+            //Astronomy -> /astronomy.json
+            //IP Lookup -> /ip.json
+
+            //PARAMETERS
+            //key
+            //q -> US zip e.g.: q=93301
+            //days -> required only for forecast: days parameter value ranges between 1 and 10.e.g: days=5
+            //if days is not provided, then only today's date is returned
+
+        </script>
+    </head>
+
+    <body>
+        <header>
+            <h1>Weather or Not</h1>
+            <nav>
+                <a href="index.js">Current Weather</a>
+                <a href="#">Forecast</a>
+                <a href="#">Astronomy</a>
+            </nav>
+        </header>
+        <section id="weather-section">
+            <form id="weather-form">
+                <label name="zipcode">Zipcode:
+                    <input id="zipcode" name="zipcode" type="text" maxlength="5" />
+                </label>
+                <button id="current-weather" type="submit" value="current-weather">Current Weather</button>
+            </form>
+            <div id="weather-info"></div>
+        </section>
+    </body>
+
+</html>
