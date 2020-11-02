@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="env.js"></script>
+        <script src="jquery.numeric.min.js"></script>
+        <link href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
+        <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+        <link rel="stylesheet" href="index.css">
+        <title>Weather or Not</title>
+        <script>
+            $(document).ready(function () {
+
+                $("#datepicker").datepicker(
+                    {
+                        dateFormat: "yy-mm-dd",
+                        changeYear: true,
+                        minDate: new Date(1995, 07, 01),
+                        maxDate: new Date(Date.now())
+                    }
+                );
+
+                $("#nasa-form").submit(function (e) {
+                    e.preventDefault();
+                    $("#nasa-pic").empty();
+                    var date = $("#datepicker").val();
+
+                    $.get(`${env.NASA_URL}?date=${date}&api_key=${env.NASA_KEY}`, function (data, textStatus, jqXHR) {
+                        console.log(data);
+                        $("#datepicker").val("");
+                        var title = `<h3>${data.title}</h3>`;
+                        var date = `<p>${data.date}</p>`;
+                        var image = `<img src="${data.url}">`;
+                        var explanation = `<p>${data.explanation}</p>`;
+                        var insert = `<div id="pic-container">${title} ${date} ${image} ${explanation}</div>`;
+                        $("#nasa-pic").append(insert);
+                        //$("#nasa-pic").append(explanation);
+                    }).fail(function () {
+                        alert("Oops, something went wrong.");
+                        $("#datepicker").val("");
+                    })
+                })
+
+
+            })
+        </script>
+    </head>
+
+    <body>
+        <header>
+            <img src="weather-icon.png" id="weather-icon" />
+            <h1>Weather or Not</h1>
+            <nav>
+                <a href="index.html">Current Weather</a>
+                <a href="forecast.html">Forecast</a>
+                <a href="astronomy.html">Astronomy</a>
+            </nav>
+        </header>
+        <section id="weather-section">
+            <form id="nasa-form">
+                <label for="datepicker">Select Date:
+                    <input type="text" id="datepicker" autocomplete="off" />
+                </label>
+                <button type="submit">See NASA's Pic of the Day</button>
+            </form>
+            <div id="nasa-pic"></div>
+        </section>
+    </body>
+
+</html>
