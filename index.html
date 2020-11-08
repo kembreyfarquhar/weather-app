@@ -17,6 +17,7 @@
                     e.preventDefault();
                     $("#weather-info").empty();
                     var zipcode = $("#zipcode").val();
+                    console.log("ZIPCODE: ", zipcode);
 
                     if ([...zipcode].length < 5) {
                         alert("Please enter a valid 5 digit zipcode.");
