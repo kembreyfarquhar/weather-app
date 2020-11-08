@@ -22,7 +22,7 @@
                     if ([...zipcode].length < 5) {
                         alert("Please enter a valid 5 digit zipcode.");
                     } else {
-                        $.get(`https://api.weatherapi.com/v1/current.json?key=04f16b2fffeb43b693052544200111&q=${zipcode}`, function (data, textStatus, jqXHR) {
+                        $.get(`https://cors-anywhere.herokuapp.com/https://api.weatherapi.com/v1/current.json?key=04f16b2fffeb43b693052544200111&q=${zipcode}`, function (data, textStatus, jqXHR) {
                             console.log(data);
 
                             $("#weather-info").append(`<h3>${data.location.name}, ${data.location.region}</h3>`);
