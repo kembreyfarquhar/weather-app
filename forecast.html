@@ -38,7 +38,7 @@
                     if ([...zipcode].length < 5) {
                         alert("Please enter a valid 5 digit zipcode.");
                     } else {
-                        $.get(`http://api.weatherapi.com/v1/forecast.json?key=04f16b2fffeb43b693052544200111&q=${zipcode}`, function (data, textStatus, jqXHR) {
+                        $.get(`https://api.weatherapi.com/v1/forecast.json?key=04f16b2fffeb43b693052544200111&q=${zipcode}`, function (data, textStatus, jqXHR) {
                             console.log(data);
                             if (Object.keys(data.alert).length > 0) {
                                 var headline = `<h4>${data.alert.headline}</h4>`;
