@@ -28,7 +28,7 @@
                     $("#nasa-pic").empty();
                     var date = $("#datepicker").val();
 
-                    $.get(`${env.NASA_URL}?date=${date}&api_key=${env.NASA_KEY}`, function (data, textStatus, jqXHR) {
+                    $.get(`https://api.nasa.gov/planetary/apod?date=${date}&api_key=XrGVFaxxsTkJADg2CzNyJyieazENFEKs8fYnUwz1`, function (data, textStatus, jqXHR) {
                         console.log(data);
                         $("#datepicker").val("");
                         var title = `<h3>${data.title}</h3>`;
